@@ -1,9 +1,9 @@
 # 1.
 
 class String:
-    def getString(self):
+    def getString(self, a):
         self.a = input()
-    def printString(self):
+    def printString(self, a):
         print(self.a.upper())
 
 # 2.
