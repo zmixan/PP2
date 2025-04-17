@@ -10,15 +10,6 @@ def connect_db():
     )
     return conn
 
-def create_table():
-    conn = connect_db()
-    cur = conn.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS phonebook (id SERIAL PRIMARY KEY,name VARCHAR(100),phone VARCHAR(20));")
-    conn.commit()
-    cur.close()
-    conn.close()
-    print('table created')
-
 def upload_from_csv(filename):
     conn = connect_db()
     cur = conn.cursor()
@@ -152,8 +143,6 @@ def search_phonebook(pattern):
 
 
 def main():
-    create_table()
-    
     while True:
         print("\nPhoneBook:")
         print("1. Upload Data from CSV")
