@@ -33,22 +33,6 @@ def upload_from_csv(filename):
     conn.close()
     print("uploaded successfully")
 
-def entering():
-    conn = connect_db()
-    cur = conn.cursor()
-    while True:
-        name = input("Enter name (or 'stop'): ")
-        if name.lower() == 'stop':
-            break
-        phone = input("Enter phone number: ")
-        cur.execute("INSERT INTO phonebook (name, phone) VALUES (%s, %s)", (name, phone))
-    conn.commit()
-    cur.close()
-    conn.close()
-    print("uploaded successfully")
-
-
-
 def update_data():
     conn = connect_db()
     cur = conn.cursor()
@@ -57,11 +41,11 @@ def update_data():
     if way == 'manually':
         name = input("name: ")
         phone = input("phone: ")
-        cur.execute("SELECT * FROM phonebook WHERE name = %s", (name,))
+        cur.execute("SELECT * FROM phonebook WHERE phone = %s", (phone,))
         exist = cur.fetchone()
     
         if exist:
-            cur.execute("UPDATE phonebook SET phone = %s WHERE name = %s", (phone, name))
+            cur.execute("UPDATE phonebook SET name = %s WHERE phone = %s", (name, phone))
             print(f"{name} updated")
         else:
             cur.execute("INSERT INTO phonebook (name, phone) VALUES (%s, %s)", (name, phone))
@@ -80,6 +64,7 @@ def update_data():
         if incorrect_data:
             print("incorrect_data:", incorrect_data)
     cur.close()
+    conn.commit()
     conn.close()
 
 def query_data():
