@@ -32,15 +32,7 @@ def update_data():
     if way == 'manually':
         name = input("name: ")
         phone = input("phone: ")
-        cur.execute("SELECT * FROM phonebook WHERE phone = %s", (phone,))
-        exist = cur.fetchone()
-    
-        if exist:
-            cur.execute("UPDATE phonebook SET name = %s WHERE phone = %s", (name, phone))
-            print(f"{name} updated")
-        else:
-            cur.execute("INSERT INTO phonebook (name, phone) VALUES (%s, %s)", (name, phone))
-            print(f'phone of {name} inserted')
+        cur.callproc('new_user', (name, phone))
 
     elif way == 'list':
         incorrect_data = []
@@ -48,10 +40,9 @@ def update_data():
         phl = input("enter list of phones separated by comma: ").split(',')
         
         for i in range(len(nal)):
-            if phl[i].isdigit() and len(phl[i]) == 11:
-                cur.execute("INSERT INTO phonebook (name, phone) VALUES (%s, %s)", (nal[i], phl[i]))
-            else:
+            if not phl[i].isdigit() or not len(phl[i]) == 11:
                 incorrect_data.append((nal[i], phl[i]))
+        cur.callproc('insertlist', (nal, phl))
         if incorrect_data:
             print("incorrect_data:", incorrect_data)
     cur.close()
@@ -116,9 +107,9 @@ def delete_data():
     filter_value = input(f"{filter_type}: ")
 
     if filter_type == 'name':
-        cur.execute("DELETE FROM phonebook WHERE name = %s", (filter_value,))
+        cur.callproc("delete_user", (filter_value,))
     elif filter_type == 'phone':
-        cur.execute("DELETE FROM phonebook WHERE phone = %s", (filter_value,))
+        cur.callproc("delete_phone", (filter_value,))
     else:
         print("incorrect filter")
         return
@@ -156,7 +147,7 @@ def main():
         choice = input("Choose movement: ")
         
         if choice == '1':
-            filename = input("Enter SCV file name: ")
+            filename = input("Enter CSV file name: ")
             upload_from_csv(filename)
         elif choice == '2':
             update_data()
