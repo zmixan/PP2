@@ -1,16 +1,15 @@
-CREATE PROCEDURE insertlist(names TEXT[], phones TEXT[]) 
+CREATE PROCEDURE delete_user(nami) 
 LANGUAGE plpgsql
 AS $$
-DECLARE
-i INTEGER;
-invalid RECORD;
 BEGIN
-FOR i IN 1..array_length(names, 1) LOOP
-    IF phones[i] ~ '^\d{11}$' THEN
-        INSERT INTO phonebook (name, phone) VALUES (name[i], phone[i]);
-    ELSE 
-        RAISE NOTICE 'incorrect phone number % - %', name[i], phone[i];
-    END IF;
-END LOOP;
+IF EXISTS (
+	SELECT 1 FROM phonebook 
+	WHERE name = nami
+) THEN
+	DELETE FROM phonebook 
+    WHERE name = nami;
+ELSE
+	RAISE NOTICE 'user % does not exist', nami;
+END IF;
 END;
 $$;
